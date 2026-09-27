@@ -115,6 +115,13 @@ python branding/build_site.py --serve # live reload on http://127.0.0.1:8000
 text, so every relative link works on both GitHub and the site. It builds with
 `--strict`, which is why a broken link fails CI instead of shipping.
 
+### One-time setup for the site
+
+GitHub Pages must be enabled in the repository settings before the deploy job can
+run: **Settings → Pages → Source: GitHub Actions**. Until then the `docs` job still
+builds and verifies the site, and the deploy job reports a warning instead of failing
+the pipeline.
+
 ---
 
 ## 4. Where to start reading the code

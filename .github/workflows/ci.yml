@@ -77,6 +77,11 @@ jobs:
     # Same run as the build, so the artifact is the one CI just verified.
     needs: docs
     runs-on: ubuntu-latest
+    # Pages must be enabled once, in Settings -> Pages -> Source: GitHub
+    # Actions. Until then this job cannot start, and a red X on every push
+    # would drown out real failures. The docs still build and are verified
+    # either way; see docs/REPO.md.
+    continue-on-error: true
     permissions:
       pages: write
       id-token: write
@@ -87,6 +92,13 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
+      - name: report whether Pages is enabled
+        run: |
+          if ! curl -sf -H "Accept: application/vnd.github+json"                "${{ github.api_url }}/repos/${{ github.repository }}/pages" >/dev/null; then
+            echo "::warning::GitHub Pages is not enabled for this repository."
+            echo "::warning::Enable it once: Settings -> Pages -> Source: GitHub Actions."
+            echo "The site still builds and is verified; only the deploy is skipped."
+          fi
       - name: download the verified build
         uses: actions/download-pages-artifact@v3
         with:
