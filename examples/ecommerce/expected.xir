@@ -1,0 +1,19 @@
+experience Shop {
+  goal: "Sell goods."
+  actors { guest buyer admin }
+  entity Order { id: ID  status }
+  capability checkout {
+    input { order: Order }
+    output: Order
+    confirmation: required
+  }
+  surface Storefront {
+    presents: Order[]
+    states: loading populated error
+  }
+  flow Checkout {
+    actor: buyer
+    Storefront -> Checkout
+    Checkout -> Order
+  }
+}

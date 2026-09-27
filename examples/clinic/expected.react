@@ -1,0 +1,4 @@
+// Clinic — generated from XIR
+export function Clinic() {
+  // surface Schedule: Appointment[] ['loading', 'empty', 'populated', 'error']
+  return null; }

@@ -1,0 +1,42 @@
+start: experience
+experience: "experience" NAME "{" exp_body "}"
+exp_body: (goal | version_stmt | actors | meta_stmt | entity | capability | surface | flow)*
+goal: "goal" ":"? ESCAPED_STRING
+version_stmt: "version" ":"? VERSION
+actors: "actors" "{" NAME* "}"
+meta_stmt: ("requirement" | "observation" | "decision" | "assumption" | "inference" | "proposal") ":"? ESCAPED_STRING
+provenance_block: "provenance" "{" prov_attr* "}"
+prov_attr: NAME ":" PROVVAL
+entity: "entity" NAME "{" (attr | provenance_block)* "}"
+attr: NAME ":" union_type
+union_type: NAME_BRACKET ("|" NAME_BRACKET)*
+capability: "capability" NAME "{" (cap_input | cap_output | cap_requires | cap_effects | cap_confirm | cap_audit | provenance_block)*
+cap_body: (cap_input | cap_output | cap_requires | cap_effects | cap_confirm | cap_audit | provenance_block)*
+cap_input: "input" "{" attr* "}"
+cap_output: "output" ":"? NAME
+cap_requires: "requires" ":"? DOTTED (","? DOTTED)*
+cap_effects: "effects" ":"? EFFECT_LINE
+cap_confirm: "confirmation" ":"? CONF
+cap_audit: "audit" ":"? CONF
+surface: "surface" NAME "{" (surf_presents | surf_comp | surf_states | provenance_block)* "}"
+surf_body: (surf_presents | surf_comp | surf_states | provenance_block)*
+surf_presents: "presents" ":"? PRESENT
+surf_comp: "components" "{" NAME* "}" | "layout" "{" NAME* "}"
+surf_states: "states" ":"? NAME (","? NAME)*
+flow: "flow" NAME "{" (flow_actor | flow_edge | flow_step | provenance_block)* "}"
+flow_body: (flow_actor | flow_edge | flow_step | provenance_block)*
+flow_actor: "actor" ":"? NAME
+flow_edge: DOTTED "->" DOTTED
+flow_step: "step" ":"? DOTTED
+DOTTED: /[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*/
+NAME_BRACKET: /[A-Za-z_][A-Za-z0-9_\.\[\]]+/
+VERSION: /[A-Za-z0-9][A-Za-z0-9\.\-]*/
+PROVVAL: /[^\n,}]+/
+PRESENT: /[A-Za-z_][A-Za-z0-9_\.\[\]]+/
+EFFECT_LINE: /[^\n}]+/
+CONF: "required" | "optional" | "true" | "false"
+%import common.CNAME -> NAME
+%import common.ESCAPED_STRING
+%import common.WS
+%ignore WS
+%ignore /#[^\n]*/

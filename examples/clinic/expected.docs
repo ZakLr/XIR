@@ -1,0 +1,10 @@
+# Clinic
+
+Help clinics manage appointments.
+
+## Entity Appointment: id: ID  status
+## Entity Patient: id: ID  name
+## Capability bookAppointment (in={'patient': 'Patient'} out=Appointment requires=[])
+## Capability confirmAppointment (in={'appointment': 'Appointment'} out= requires=['appointment.confirm'])
+## Surface Schedule: presents Appointment[], states ['loading', 'empty', 'populated', 'error']
+## Flow BookAppointment: Schedule -> BookAppointment -> BookAppointment -> validating -> validating -> Appointment

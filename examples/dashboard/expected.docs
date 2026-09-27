@@ -1,0 +1,8 @@
+# Dashboard
+
+Show metrics.
+
+## Entity Metric: id: ID  name
+## Capability refreshMetrics (in={'metric': 'Metric'} out=Metric requires=[])
+## Surface Overview: presents Metric[], states ['loading', 'populated', 'error']
+## Flow Refresh: Overview -> Refresh -> Refresh -> Metric

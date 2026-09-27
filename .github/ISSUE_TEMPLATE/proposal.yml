@@ -1,0 +1,7 @@
+name: Proposal
+description: Propose an ontology primitive, emitter target or benchmark task
+body:
+  - type: textarea
+    attributes: {label: Proposal, description: What semantic information does it add per token?}
+  - type: textarea
+    attributes: {label: Sec-53 gate, description: Why can't an existing standard cover this? What measurement proves it?}

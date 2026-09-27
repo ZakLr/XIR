@@ -1,0 +1,28 @@
+experience ProjectManager {
+  goal: "Help teams organize and execute work."
+  actors { member manager admin }
+  entity Project { id: ID  name: Text  status: draft | active | archived }
+  entity Task { id: ID  title: Text  done: Bool }
+  capability createProject {
+    input { name: Text }
+    output: Project
+  }
+  capability archiveProject {
+    input { project: Project }
+    requires: project.archive
+    effects: project.status = archived
+    confirmation: required
+    audit: required
+  }
+  surface Dashboard {
+    presents: Project[]
+    components { Sidebar Main Header ProjectList }
+    states: loading empty populated error
+  }
+  flow CreateProject {
+    actor: member
+    Dashboard -> CreateProject
+    CreateProject -> validating
+    validating -> Project
+  }
+}

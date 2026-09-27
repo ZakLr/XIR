@@ -1,0 +1,4 @@
+Main state loading: announced=true
+Main state empty: announced=true
+Main state populated: announced=true
+Main state error: announced=true

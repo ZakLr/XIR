@@ -1,0 +1,8 @@
+import { test, expect } from '@playwright/test';
+
+test('Checkout', async ({ page }) => {
+  // step: Storefront
+  // step: Checkout
+  // step: Checkout
+  // step: Order
+});

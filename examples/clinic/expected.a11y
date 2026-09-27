@@ -1,0 +1,6 @@
+Schedule.Calendar: role=auto focusable=true name=Calendar
+Schedule.AppointmentList: role=auto focusable=true name=AppointmentList
+Schedule state loading: announced=true
+Schedule state empty: announced=true
+Schedule state populated: announced=true
+Schedule state error: announced=true

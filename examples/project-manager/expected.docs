@@ -1,0 +1,10 @@
+# ProjectManager
+
+Help teams organize and execute work.
+
+## Entity Project: id: ID  name, status: draft | active | archived
+## Entity Task: id: ID  title, done: Bool
+## Capability createProject (in={'name': 'Text'} out=Project requires=[])
+## Capability archiveProject (in={'project': 'Project'} out= requires=['project.archive'])
+## Surface Dashboard: presents Project[], states ['loading', 'empty', 'populated', 'error']
+## Flow CreateProject: Dashboard -> CreateProject -> CreateProject -> validating -> validating -> Project

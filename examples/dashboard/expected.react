@@ -1,0 +1,4 @@
+// Dashboard — generated from XIR
+export function Dashboard() {
+  // surface Overview: Metric[] ['loading', 'populated', 'error']
+  return null; }

@@ -1,0 +1,9 @@
+experience Todo {
+  goal: "Track tasks."
+  actors { user }
+  entity Todo { id: ID  title: Text  done: Bool }
+  capability addTodo { input { title: Text }  output: Todo }
+  capability completeTodo { input { todo: Todo }  effects: todo.done = true }
+  surface Main { presents: Todo[]  states: loading empty populated error }
+  flow AddTodo { actor: user  Main -> AddTodo  AddTodo -> Todo }
+}

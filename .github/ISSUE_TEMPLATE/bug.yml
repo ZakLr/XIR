@@ -1,0 +1,9 @@
+name: Bug report
+description: Report a wrong parse, validation, emit or benchmark result
+body:
+  - type: textarea
+    attributes: {label: What happened, description: Expected vs actual (paste `xir validate` / `xir diff` output)}
+  - type: textarea
+    attributes: {label: Minimal .xir repro}
+  - type: input
+    attributes: {label: Version (`xir --help` / commit)}

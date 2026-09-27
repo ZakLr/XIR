@@ -1,0 +1,4 @@
+// ProjectManager — generated from XIR
+export function ProjectManager() {
+  // surface Dashboard: Project[] ['loading', 'empty', 'populated', 'error']
+  return null; }

@@ -1,0 +1,9 @@
+# Todo
+
+Track tasks.
+
+## Entity Todo: id: ID  title, done: Bool
+## Capability addTodo (in={'title': 'Text'} out=Todo requires=[])
+## Capability completeTodo (in={'todo': 'Todo'} out= requires=[])
+## Surface Main: presents Todo[], states ['loading', 'empty', 'populated', 'error']
+## Flow AddTodo: Main -> AddTodo -> AddTodo -> Todo

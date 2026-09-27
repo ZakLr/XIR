@@ -1,0 +1,10 @@
+import { test, expect } from '@playwright/test';
+
+test('CreateProject', async ({ page }) => {
+  // step: Dashboard
+  // step: CreateProject
+  // step: CreateProject
+  // step: validating
+  // step: validating
+  // step: Project
+});

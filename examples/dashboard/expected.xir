@@ -1,0 +1,18 @@
+experience Dashboard {
+  goal: "Show metrics."
+  actors { viewer admin }
+  entity Metric { id: ID  name }
+  capability refreshMetrics {
+    input { metric: Metric }
+    output: Metric
+  }
+  surface Overview {
+    presents: Metric[]
+    states: loading populated error
+  }
+  flow Refresh {
+    actor: viewer
+    Overview -> Refresh
+    Refresh -> Metric
+  }
+}

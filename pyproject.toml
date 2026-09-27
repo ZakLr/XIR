@@ -1,0 +1,38 @@
+[project]
+name = "xir"
+version = "1.0.0"
+description = "XIR — the semantic IR for interactive products: model intent, capabilities, surfaces, state and flows; compile to UI, tests, docs and agent tools"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
+authors = [{name = "XIR contributors"}]
+keywords = ["ui", "dsl", "ir", "agents", "mcp", "a2ui", "compiler", "ux", "semantic-model"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Compilers",
+  "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+]
+dependencies = [
+  "lark>=1.2",
+  "pydantic>=2.0",
+  "networkx>=3.0",
+  "click>=8.0",
+]
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+[project.urls]
+Homepage = "https://github.com/ZakLr/XIR"
+Documentation = "https://github.com/ZakLr/XIR#readme"
+Repository = "https://github.com/ZakLr/XIR"
+Issues = "https://github.com/ZakLr/XIR/issues"
+[project.scripts]
+xir = "xir.cli:main"
+ixl = "xir.cli:main"
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+[tool.setuptools.packages.find]
+where = ["src"]

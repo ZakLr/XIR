@@ -1,0 +1,4 @@
+// Shop — generated from XIR
+export function Shop() {
+  // surface Storefront: Order[] ['loading', 'populated', 'error']
+  return null; }
