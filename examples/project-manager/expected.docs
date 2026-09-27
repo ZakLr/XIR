@@ -2,9 +2,17 @@
 
 Help teams organize and execute work.
 
-## Entity Project: id: ID  name, status: draft | active | archived
-## Entity Task: id: ID  title, done: Bool
-## Capability createProject (in={'name': 'Text'} out=Project requires=[])
-## Capability archiveProject (in={'project': 'Project'} out= requires=['project.archive'])
-## Surface Dashboard: presents Project[], states ['loading', 'empty', 'populated', 'error']
-## Flow CreateProject: Dashboard -> CreateProject -> CreateProject -> validating -> validating -> Project
+## Entity Project: id: ID, name: Text, status: draft | active | archived
+## Entity Task: id: ID, title: Text, done: Bool
+## Capability createProject `capability.createProject`
+- requires: ['permission.project.create']
+- mutates: []
+- emits: ['event.projectCreated']
+## Capability archiveProject `capability.archiveProject`
+- requires: ['permission.project.archive']
+- mutates: ['field.project.status']
+- emits: ['event.projectArchived']
+## Surface Dashboard `surface.dashboard` — components ['component.dashboard.sidebar', 'component.dashboard.main', 'component.dashboard.header', 'component.dashboard.projectList', 'component.dashboard.createProjectButton']
+## Surface ProjectDetail `surface.projectDetail` — components ['component.dashboard.header', 'component.projectDetail.projectOverview', 'component.projectDetail.taskList', 'component.projectDetail.archiveButton']
+## Surface CreateProject `surface.createProject` — components ['component.projectForm', 'component.createProject.submitButton']
+## Flow CreateProject `flow.createProject` — actor actor.member, goal goal.createProject

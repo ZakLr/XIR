@@ -1,8 +1,19 @@
 <h1>ProjectManager</h1>
 <p>Help teams organize and execute work.</p>
-<section id='Dashboard'><h2>Dashboard</h2>
-<div>Sidebar</div>
-<div>Main</div>
-<div>Header</div>
-<div>ProjectList</div>
+<section id='Dashboard' data-xir='surface.dashboard'><h2>Dashboard</h2>
+<div data-xir='component.dashboard.sidebar'>Sidebar</div>
+<div data-xir='component.dashboard.main'>Main</div>
+<div data-xir='component.dashboard.header'>Header</div>
+<div data-xir='component.dashboard.projectList'>ProjectList</div>
+<div data-xir='component.dashboard.createProjectButton'>CreateProjectButton</div>
+</section>
+<section id='ProjectDetail' data-xir='surface.projectDetail'><h2>ProjectDetail</h2>
+<div data-xir='component.dashboard.header'>Header</div>
+<div data-xir='component.projectDetail.projectOverview'>ProjectOverview</div>
+<div data-xir='component.projectDetail.taskList'>TaskList</div>
+<div data-xir='component.projectDetail.archiveButton'>ArchiveButton</div>
+</section>
+<section id='CreateProject' data-xir='surface.createProject'><h2>CreateProject</h2>
+<div data-xir='component.projectForm'>ProjectForm</div>
+<div data-xir='component.createProject.submitButton'>SubmitButton</div>
 </section>

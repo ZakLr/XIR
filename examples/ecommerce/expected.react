@@ -1,4 +1,37 @@
-// Shop — generated from XIR
-export function Shop() {
-  // surface Storefront: Order[] ['loading', 'populated', 'error']
-  return null; }
+// Generated from XIR semantic model. Do not edit by hand.
+// Each surface, component, capability and state below is traceable to a semantic id.
+import React, { useState, useCallback } from 'react';
+
+
+export const capabilities = {
+  checkout: { id: 'capability.checkout', requires: [], mutates: [], emits: [], confirmation: true, audit: false },
+};
+
+// state machine machine.storefront.storefront
+const initialStorefront states = 'state.storefront.loading';
+const loading = { id: 'state.storefront.loading', name: 'loading' };
+const populated = { id: 'state.storefront.populated', name: 'populated' };
+const error = { id: 'state.storefront.error', name: 'error' };
+const transitionsStorefront states = {
+};
+function useStorefront states(initial = 'state.storefront.loading') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsStorefront states[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// surface surface.storefront
+// presents entity.order
+export function StorefrontView() {
+  const [state, send] = useStorefront states();
+  if (state === 'state.storefront.loading') return <StorefrontState name={'loading'} />;
+  if (state === 'state.storefront.populated') return <StorefrontState name={'populated'} />;
+  if (state === 'state.storefront.error') return <StorefrontState name={'error'} />;
+  return null;
+}
+export function StorefrontState({ name }) { return <section data-state={name} />; }
+
+export default function Shop() { return <div data-xir="exp.shop" />; }

@@ -1,6 +1,6 @@
 [project]
 name = "xir"
-version = "1.0.0"
+version = "0.3.0"
 description = "XIR — the semantic IR for interactive products: model intent, capabilities, surfaces, state and flows; compile to UI, tests, docs and agent tools"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -8,7 +8,7 @@ license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
 authors = [{name = "XIR contributors"}]
 keywords = ["ui", "dsl", "ir", "agents", "mcp", "a2ui", "compiler", "ux", "semantic-model"]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
   "Programming Language :: Python :: 3",

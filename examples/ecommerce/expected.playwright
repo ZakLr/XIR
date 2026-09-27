@@ -1,8 +1,8 @@
+// Playwright tests generated from the semantic graph.
+// Each test walks interaction -> capability -> permission -> mutation -> event -> state.
 import { test, expect } from '@playwright/test';
 
-test('Checkout', async ({ page }) => {
-  // step: Storefront
-  // step: Checkout
-  // step: Checkout
-  // step: Order
+test('flow Checkout', async ({ page }) => {
+  // step step.checkout.storefrontToCheckout: surface.storefront --None--> None
+  // step step.checkout.checkoutToOrder: None --None--> entity.order
 });

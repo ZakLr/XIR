@@ -1,4 +1,40 @@
-// Todo — generated from XIR
-export function Todo() {
-  // surface Main: Todo[] ['loading', 'empty', 'populated', 'error']
-  return null; }
+// Generated from XIR semantic model. Do not edit by hand.
+// Each surface, component, capability and state below is traceable to a semantic id.
+import React, { useState, useCallback } from 'react';
+
+
+export const capabilities = {
+  addTodo: { id: 'capability.addTodo', requires: [], mutates: [], emits: [], confirmation: false, audit: false },
+  completeTodo: { id: 'capability.completeTodo', requires: [], mutates: ['field.todo.done'], emits: [], confirmation: false, audit: false },
+};
+
+// state machine machine.main.main
+const initialMain states = 'state.main.loading';
+const loading = { id: 'state.main.loading', name: 'loading' };
+const empty = { id: 'state.main.empty', name: 'empty' };
+const populated = { id: 'state.main.populated', name: 'populated' };
+const error = { id: 'state.main.error', name: 'error' };
+const transitionsMain states = {
+};
+function useMain states(initial = 'state.main.loading') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsMain states[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// surface surface.main
+// presents entity.todo
+export function MainView() {
+  const [state, send] = useMain states();
+  if (state === 'state.main.loading') return <MainState name={'loading'} />;
+  if (state === 'state.main.empty') return <MainState name={'empty'} />;
+  if (state === 'state.main.populated') return <MainState name={'populated'} />;
+  if (state === 'state.main.error') return <MainState name={'error'} />;
+  return null;
+}
+export function MainState({ name }) { return <section data-state={name} />; }
+
+export default function Todo() { return <div data-xir="exp.todo" />; }

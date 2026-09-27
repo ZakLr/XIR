@@ -2,7 +2,10 @@
 
 Show metrics.
 
-## Entity Metric: id: ID  name
-## Capability refreshMetrics (in={'metric': 'Metric'} out=Metric requires=[])
-## Surface Overview: presents Metric[], states ['loading', 'populated', 'error']
-## Flow Refresh: Overview -> Refresh -> Refresh -> Metric
+## Entity Metric: id: ID, name: Text
+## Capability refreshMetrics `capability.refreshMetrics`
+- requires: []
+- mutates: []
+- emits: []
+## Surface Overview `surface.overview` — components []
+## Flow Refresh `flow.refresh` — actor actor.viewer, goal None

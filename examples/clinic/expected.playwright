@@ -1,10 +1,9 @@
+// Playwright tests generated from the semantic graph.
+// Each test walks interaction -> capability -> permission -> mutation -> event -> state.
 import { test, expect } from '@playwright/test';
 
-test('BookAppointment', async ({ page }) => {
-  // step: Schedule
-  // step: BookAppointment
-  // step: BookAppointment
-  // step: validating
-  // step: validating
-  // step: Appointment
+test('flow BookAppointment', async ({ page }) => {
+  // step step.bookAppointment.scheduleToBookAppointment: surface.schedule --None--> None
+  // step step.bookAppointment.bookAppointmentTovalidating: None --None--> None
+  // step step.bookAppointment.validatingToAppointment: None --None--> entity.appointment
 });

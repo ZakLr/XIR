@@ -1,96 +1,174 @@
-"""Click CLI: parse validate query inspect diff compile test."""
+"""XIR CLI. Every command runs on the semantic IR, never on the syntax AST."""
 import click
-from pathlib import Path
-from xir.parser.parse import parse_file
-from xir.validator.validate import validate
-from xir.query.engine import query, inspect as _inspect, trace_capability, explain as _explain
+from xir.ir import load_file, load, graph_of
+from xir.parser.parse import ParseError, recover_text
+from xir.validator.validate import validate as check_model
+from xir.query import engine as Q
 from xir.diff.diff import diff
-from xir.compiler.emit import to_html, to_react, to_a2ui, to_tests, to_docs, to_a11y, to_playwright
+from xir.compiler import emit as E
 from xir.compiler.dsl import to_xir
-from xir.patch.patch import apply_patch_text
-from xir.semantic.graph import summarize
+from xir.patch.patch import apply_text, PatchError
+from xir.semantic.levels import summarize
+
+
+def _model(path):
+    return load_file(path)
+
 
 @click.group()
+@click.version_option(package_name="xir", prog_name="xir")
 def main():
-    pass
+    """XIR — the semantic IR for interactive products."""
+
 
 @main.command()
 @click.argument("file")
-def parse(file):
-    exp = parse_file(file)
-    click.echo(summarize(exp, 3))
+@click.option("--level", default="3", help="context level L0..L6")
+def parse(file, level):
+    m = _model(file)
+    click.echo(summarize(m, int(level)))
 
-@main.command()
+
+@main.command(name="validate")
 @click.argument("file")
 def validate_cmd(file):
-    exp = parse_file(file)
-    errs = validate(exp)
-    click.echo("valid" if not errs else "\n".join(errs))
+    m = _model(file)
+    findings = check_model(m)
+    if not findings:
+        click.echo(f"valid: {m.name} [{m.id}] {len(m.all_ids())} semantic nodes")
+        return
+    for f in findings:
+        click.echo(str(f))
+    raise SystemExit(1)
 
-main.add_command(validate_cmd, "validate")
 
 @main.command()
 @click.argument("file")
 @click.argument("q")
-def query_cmd(file, q):
-    click.echo(query(parse_file(file), q))
+def query(file, q):
+    click.echo(Q.query(graph_of(_model(file)), q))
 
-main.add_command(query_cmd, "query")
-
-@main.command()
-@click.argument("file")
-@click.argument("kind")
-@click.argument("name")
-def inspect(file, kind, name):
-    exp = parse_file(file)
-    if kind == "capability":
-        click.echo(trace_capability(exp, name))
-    else:
-        click.echo(_inspect(exp, kind, name))
 
 @main.command()
 @click.argument("file")
-@click.argument("kind")
-@click.argument("name")
-def explain(file, kind, name):
-    click.echo(_explain(parse_file(file), kind, name))
+@click.argument("ref")
+def inspect(file, ref):
+    """Compact semantic slice for an agent (§16)."""
+    click.echo(Q.show(graph_of(_model(file)), ref))
+
 
 @main.command()
 @click.argument("file")
-@click.argument("patchtext")
-def patch(file, patchtext):
-    exp = parse_file(file)
-    for line in apply_patch_text(exp, patchtext):
-        click.echo(line)
-    errs = validate(exp)
-    click.echo("VALID" if not errs else "INVALID:\n" + "\n".join(errs))
+@click.argument("ref")
+def trace(file, ref):
+    """What happens when this capability fires (§33)."""
+    click.echo(Q.trace(graph_of(_model(file)), ref))
+
 
 @main.command()
+@click.argument("file")
+@click.argument("ref")
+@click.argument("relation")
+@click.option("--depth", default=1)
+def follow(file, ref, relation, depth):
+    click.echo(Q.follow(graph_of(_model(file)), ref, relation, depth))
+
+
+@main.command()
+@click.argument("file")
 @click.argument("old")
 @click.argument("new")
-def diff_cmd(old, new):
-    click.echo(diff(parse_file(old), parse_file(new)))
+def diff_cmd(file, old, new):
+    """`old` and `new` are ids/paths; if only one path, diff against `file`."""
+    click.echo(diff(_model(old), _model(new)))
 
-main.add_command(diff_cmd, "diff")
 
 @main.command()
 @click.argument("file")
-@click.option("--target", default="html")
-def compile(file, target):
-    exp = parse_file(file)
-    fn = {"html": to_html, "react": to_react, "a2ui": to_a2ui, "tests": to_tests,
-          "docs": to_docs, "a11y": to_a11y, "playwright": to_playwright}[target]
-    click.echo(fn(exp))
+@click.option("--target", default="react",
+              type=click.Choice(["react", "html", "a2ui", "docs", "a11y", "playwright", "xir"]))
+@click.option("--out", type=click.Path(), help="write to a file instead of stdout")
+def compile(file, target, out):
+    m = _model(file)
+    fn = {"react": E.to_react, "html": E.to_html, "a2ui": E.to_a2ui, "docs": E.to_docs,
+          "a11y": E.to_a11y, "playwright": E.to_playwright, "xir": to_xir}[target]
+    text = fn(m)
+    if out:
+        click.echo(f"wrote {out}", err=True)
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(text)
+    else:
+        click.echo(text)
+
+
+def _fmt_op(op) -> str:
+    name, ref, kwargs = op[0], op[1], (op[2] if len(op) > 2 else {})
+    args = " ".join(f"{k}={v}" for k, v in kwargs.items() if v not in (None, "", []))
+    return f"{name} {ref}" + (f"  [{args}]" if args else "")
+
+
+@main.command()
+@click.argument("file")
+@click.argument("patch_text")
+def patch(file, patch_text):
+    """Atomic patch: applied only if the model still validates (§17)."""
+    m = _model(file)
+    try:
+        new, ops = apply_text(m, patch_text)
+    except PatchError as exc:
+        click.echo(f"PATCH REJECTED (rolled back): {exc}")
+        raise SystemExit(1)
+    for op in ops:
+        click.echo(f"  {_fmt_op(op)}")
+    click.echo(diff(m, new))
+    click.echo("COMMITTED")
+
+
+@main.command()
+@click.argument("file")
+def recover(file):
+    """Explicit best-effort parse; reports everything it could not resolve (§21)."""
+    from pathlib import Path
+    text = Path(file).read_text(encoding="utf-8")
+    try:
+        m = load(text)
+    except ParseError as exc:
+        click.echo(f"ERROR: invalid XIR: {exc}")
+        m, problems = recover_text(text)
+        click.echo("recovered with problems:")
+        for p in problems:
+            click.echo(f"  - {p}")
+        raise SystemExit(1)
+    click.echo(f"strict parse OK: {m.name} [{m.id}]")
+    click.echo(summarize(m, 2))
+
 
 @main.command()
 @click.argument("file")
 def test(file):
-    exp = parse_file(file)
-    errs = validate(exp)
-    click.echo(to_tests(exp) + ("\nVALID" if not errs else "\nINVALID:\n" + "\n".join(errs)))
+    """Model-level self-test: validate, then confirm the emitted projections are stable."""
+    m = _model(file)
+    findings = check_model(m)
+    react = E.to_react(m)
+    pw = E.to_playwright(m)
+    canon = to_xir(m)
+    stable = diff(m, load(canon)) == "no semantic changes"
+    click.echo(f"validate: {'clean' if not findings else str(len(findings)) + ' findings'}")
+    click.echo(f"react: {len(react.splitlines())} lines")
+    click.echo(f"playwright: {len(pw.splitlines())} lines")
+    click.echo(f"round-trip: {'stable' if stable else 'UNSTABLE'}")
+    for f in findings:
+        click.echo(str(f))
+    raise SystemExit(0 if (not findings and stable) else 1)
+
 
 @main.command(name="bench")
 def bench():
+    """Run the agent-oriented benchmark suite (§25)."""
     from benchmarks.tasks import run_all
     for r in run_all():
-        click.echo(f"{r['task']}: ok={r['ok']} {r['seconds']}s chars={r['chars']}")
+        click.echo(f"{r['task']}: {r['verdict']} ({r['basis']}) {r['ms']}ms")
+
+
+if __name__ == "__main__":
+    main()

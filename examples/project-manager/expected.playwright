@@ -1,10 +1,42 @@
+// Playwright tests generated from the semantic graph.
+// Each test walks interaction -> capability -> permission -> mutation -> event -> state.
 import { test, expect } from '@playwright/test';
 
-test('CreateProject', async ({ page }) => {
-  // step: Dashboard
-  // step: CreateProject
-  // step: CreateProject
-  // step: validating
-  // step: validating
-  // step: Project
+test('createProject', async ({ page }) => {
+  await page.goto('/dashboard');
+  // component component.dashboard.createProjectButton
+  await page.getByTestId('component.dashboard.createProjectButton').click();
+  // interaction interaction.createProject (click) invokes capability.createProject
+  // requires permission.project.create
+  // expect event event.projectCreated
+  await expect(page.getByTestId('state.projectList.loading')).toBeVisible();
+});
+
+test('archiveProject', async ({ page }) => {
+  await page.goto('/projectdetail');
+  // component component.projectDetail.archiveButton
+  await page.getByTestId('component.projectDetail.archiveButton').click();
+  // interaction interaction.archiveProject (click) invokes capability.archiveProject
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByRole('button', { name: /confirm/i }).click();
+  // requires permission.project.archive
+  await expect(page.getByTestId('field.project.status')).toHaveText(/archived/i);
+  // expect event event.projectArchived
+  await expect(page.getByTestId('state.projectList.refreshing')).toBeVisible();
+  await expect(page.getByTestId('state.projectDetailActions.confirming')).toBeVisible();
+});
+
+test('submitProject', async ({ page }) => {
+  await page.goto('/createproject');
+  // component component.createProject.submitButton
+  await page.getByTestId('component.createProject.submitButton').click();
+  // interaction interaction.submitProject (click) invokes capability.createProject
+  // requires permission.project.create
+  // expect event event.projectCreated
+  await expect(page.getByTestId('state.projectList.loading')).toBeVisible();
+});
+
+test('flow CreateProject', async ({ page }) => {
+  // step step.createProject.openForm: surface.dashboard --interaction.createProject--> surface.createProject
+  // step step.createProject.submit: surface.createProject --interaction.submitProject--> state.projectCreation.validating
 });

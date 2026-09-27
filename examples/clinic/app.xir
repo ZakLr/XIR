@@ -3,6 +3,8 @@ experience Clinic {
   version: 1
   actors { patient clinician admin }
   requirement: "Only clinicians can confirm appointments."
+  permission appointment.confirm { description: "Confirm an appointment." }
+  actor clinician { permissions { appointment.confirm } }
   entity Appointment { id: ID  status: draft | active | archived }
   entity Patient { id: ID  name: Text }
   capability bookAppointment {

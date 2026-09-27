@@ -1,28 +1,213 @@
 experience ProjectManager {
   goal: "Help teams organize and execute work."
-  actors { member manager admin }
-  entity Project { id: ID  name: Text  status: draft | active | archived }
-  entity Task { id: ID  title: Text  done: Bool }
+  version: 1
+
+  requirement: "Members must confirm destructive project actions."
+  decision: "Project archiving lives in the project overflow menu."
+  inference archiveLocation {
+    claim: "Archive belongs in the project overflow menu."
+    confidence: probable
+    evidence { screenshot.dashboard analytics.archiveUsage design.decision.D14 }
+  }
+
+  goal createProject {
+    description: "Create a new project."
+    actor: member
+  }
+
+  permission project.read   { description: "View projects." }
+  permission project.create { description: "Create projects." }
+  permission project.archive { description: "Archive a project." }
+
+  actor member {
+    permissions { project.read project.create }
+  }
+  actor manager {
+    permissions { project.read project.create project.archive }
+  }
+
+  entity Project {
+    id: ID
+    name: Text
+    status: draft | active | archived
+  }
+  entity Task {
+    id: ID
+    title: Text
+    done: Bool
+  }
+
+  event ProjectCreated
+  event ProjectArchived
+
   capability createProject {
     input { name: Text }
     output: Project
+    requires: project.create
+    consumes: Project
+    mutates { }
+    emits: ProjectCreated
   }
+
   capability archiveProject {
     input { project: Project }
+    output: Project
     requires: project.archive
-    effects: project.status = archived
+    consumes: Project
+    mutates { Project.status }
+    emits: ProjectArchived
     confirmation: required
     audit: required
   }
+
+  interaction createProject {
+    trigger: click
+    target: component.dashboard.createProjectButton
+    invokes: createProject
+  }
+
+  interaction archiveProject {
+    trigger: click
+    target: component.projectDetail.archiveButton
+    invokes: archiveProject
+  }
+
+  component CreateProjectButton {
+    id: component.dashboard.createProjectButton
+    invokes: createProject
+  }
+
+  component ArchiveButton {
+    id: component.projectDetail.archiveButton
+    presents: Project
+    invokes: archiveProject
+    states { projectDetailActions }
+  }
+
+  component ProjectList {
+    id: component.dashboard.projectList
+    presents: Project
+    states { projectList }
+  }
+
+  state projectList {
+    initial: loading
+    loading {
+      on dataReceived -> populated
+      on emptyReceived -> empty
+      on failure -> error
+    }
+    empty {
+      on createProject -> loading
+    }
+    populated {
+      on refresh -> refreshing
+      on ProjectArchived -> refreshing
+    }
+    refreshing {
+      on success -> populated
+      on failure -> error
+    }
+    error {
+      on retry -> loading
+    }
+  }
+
+  state projectDetailActions {
+    initial: enabled
+    enabled {
+      on archiveProject -> confirming
+    }
+    confirming {
+      on confirm -> archived
+      on cancel -> enabled
+      on failure -> error
+    }
+    archived {
+      on reset -> enabled
+    }
+    error {
+      on retry -> enabled
+    }
+  }
+
   surface Dashboard {
     presents: Project[]
-    components { Sidebar Main Header ProjectList }
-    states: loading empty populated error
+    components { Sidebar Main Header ProjectList CreateProjectButton }
+    machine: projectList
   }
+
+  surface ProjectDetail {
+    presents: Project
+    components { Header ProjectOverview TaskList ArchiveButton }
+  }
+
+  surface CreateProject {
+    presents: Project
+    components { ProjectForm SubmitButton }
+  }
+
+  interaction submitProject {
+    trigger: click
+    target: component.createProject.submitButton
+    invokes: createProject
+  }
+
+  component SubmitButton {
+    id: component.createProject.submitButton
+    invokes: createProject
+  }
+
+  component ProjectForm {
+    presents: Project
+  }
+
+  state projectCreation {
+    initial: validating
+    validating {
+      on success -> created
+      on invalid -> invalid
+      on networkError -> error
+    }
+    created {
+      on reset -> validating
+    }
+    invalid {
+      on retry -> validating
+    }
+    error {
+      on retry -> validating
+    }
+  }
+
   flow CreateProject {
+    goal: createProject
     actor: member
-    Dashboard -> CreateProject
-    CreateProject -> validating
-    validating -> Project
+    entry { surface: surface.dashboard }
+    step openForm {
+      from: surface.dashboard
+      action: interaction.createProject
+      to: surface.createProject
+    }
+    step submit {
+      from: surface.createProject
+      action: interaction.submitProject
+      to: state.projectCreation.validating
+    }
+    branch validation {
+      from: state.projectCreation.validating
+      success -> entity.project
+      invalid -> state.projectCreation.invalid
+      networkError -> state.projectCreation.error
+    }
+  }
+
+  invariant destructiveActionsRequireConfirmation {
+    rule: "destructive actions require confirmation"
+    scope: capability.archiveProject
+  }
+  invariant unauthenticatedCannotAccessDashboard {
+    rule: "unauthenticated users cannot access Dashboard"
+    scope: surface.dashboard
   }
 }

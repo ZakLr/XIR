@@ -1,4 +1,175 @@
-// ProjectManager — generated from XIR
-export function ProjectManager() {
-  // surface Dashboard: Project[] ['loading', 'empty', 'populated', 'error']
-  return null; }
+// Generated from XIR semantic model. Do not edit by hand.
+// Each surface, component, capability and state below is traceable to a semantic id.
+import React, { useState, useCallback } from 'react';
+
+// event event.projectCreated (ProjectCreated)
+// event event.projectArchived (ProjectArchived)
+
+export const capabilities = {
+  createProject: { id: 'capability.createProject', requires: ['permission.project.create'], mutates: [], emits: ['event.projectCreated'], confirmation: false, audit: false },
+  archiveProject: { id: 'capability.archiveProject', requires: ['permission.project.archive'], mutates: ['field.project.status'], emits: ['event.projectArchived'], confirmation: true, audit: true },
+};
+
+// state machine machine.projectList
+const initialprojectList = 'state.projectList.loading';
+const loading = { id: 'state.projectList.loading', name: 'loading' };
+const empty = { id: 'state.projectList.empty', name: 'empty' };
+const populated = { id: 'state.projectList.populated', name: 'populated' };
+const refreshing = { id: 'state.projectList.refreshing', name: 'refreshing' };
+const error = { id: 'state.projectList.error', name: 'error' };
+const transitionsprojectList = {
+  'dataReceived': { from: 'state.projectList.loading', to: 'state.projectList.populated' },
+  'emptyReceived': { from: 'state.projectList.loading', to: 'state.projectList.empty' },
+  'failure': { from: 'state.projectList.loading', to: 'state.projectList.error' },
+  'createProject': { from: 'state.projectList.empty', to: 'state.projectList.loading' },
+  'refresh': { from: 'state.projectList.populated', to: 'state.projectList.refreshing' },
+  'ProjectArchived': { from: 'state.projectList.populated', to: 'state.projectList.refreshing' },
+  'success': { from: 'state.projectList.refreshing', to: 'state.projectList.populated' },
+  'failure': { from: 'state.projectList.refreshing', to: 'state.projectList.error' },
+  'retry': { from: 'state.projectList.error', to: 'state.projectList.loading' },
+};
+function useprojectList(initial = 'state.projectList.loading') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsprojectList[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// state machine machine.projectDetailActions
+const initialprojectDetailActions = 'state.projectDetailActions.enabled';
+const enabled = { id: 'state.projectDetailActions.enabled', name: 'enabled' };
+const confirming = { id: 'state.projectDetailActions.confirming', name: 'confirming' };
+const archived = { id: 'state.projectDetailActions.archived', name: 'archived' };
+const error = { id: 'state.projectDetailActions.error', name: 'error' };
+const transitionsprojectDetailActions = {
+  'archiveProject': { from: 'state.projectDetailActions.enabled', to: 'state.projectDetailActions.confirming' },
+  'confirm': { from: 'state.projectDetailActions.confirming', to: 'state.projectDetailActions.archived' },
+  'cancel': { from: 'state.projectDetailActions.confirming', to: 'state.projectDetailActions.enabled' },
+  'failure': { from: 'state.projectDetailActions.confirming', to: 'state.projectDetailActions.error' },
+  'reset': { from: 'state.projectDetailActions.archived', to: 'state.projectDetailActions.enabled' },
+  'retry': { from: 'state.projectDetailActions.error', to: 'state.projectDetailActions.enabled' },
+};
+function useprojectDetailActions(initial = 'state.projectDetailActions.enabled') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsprojectDetailActions[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// state machine machine.projectCreation
+const initialprojectCreation = 'state.projectCreation.validating';
+const validating = { id: 'state.projectCreation.validating', name: 'validating' };
+const created = { id: 'state.projectCreation.created', name: 'created' };
+const invalid = { id: 'state.projectCreation.invalid', name: 'invalid' };
+const error = { id: 'state.projectCreation.error', name: 'error' };
+const transitionsprojectCreation = {
+  'success': { from: 'state.projectCreation.validating', to: 'state.projectCreation.created' },
+  'invalid': { from: 'state.projectCreation.validating', to: 'state.projectCreation.invalid' },
+  'networkError': { from: 'state.projectCreation.validating', to: 'state.projectCreation.error' },
+  'reset': { from: 'state.projectCreation.created', to: 'state.projectCreation.validating' },
+  'retry': { from: 'state.projectCreation.invalid', to: 'state.projectCreation.validating' },
+  'retry': { from: 'state.projectCreation.error', to: 'state.projectCreation.validating' },
+};
+function useprojectCreation(initial = 'state.projectCreation.validating') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsprojectCreation[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// component component.dashboard.createProjectButton
+async function oncreateProject() {
+  // capability capability.createProject
+  if (False) { /* confirm required */ }
+  dispatch('event.projectCreated');
+}
+// interaction interaction.createProject: click -> capability.createProject
+const createProjectInteraction = { trigger: 'click', invokes: 'capability.createProject' };
+export function CreateProjectButton({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.dashboard.createProjectButton" data-name="CreateProjectButton" />;
+}
+
+// component component.projectDetail.archiveButton
+// presents entity.project
+async function onarchiveProject() {
+  // capability capability.archiveProject
+  if (True) { /* confirm required */ }
+  dispatch('event.projectArchived');
+  set('field.project.status');
+}
+// interaction interaction.archiveProject: click -> capability.archiveProject
+const archiveProjectInteraction = { trigger: 'click', invokes: 'capability.archiveProject' };
+// uses machine machine.projectDetailActions
+export function ArchiveButton({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.projectDetail.archiveButton" data-name="ArchiveButton" />;
+}
+
+// component component.dashboard.projectList
+// presents entity.project
+// uses machine machine.projectList
+export function ProjectList({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.dashboard.projectList" data-name="ProjectList" />;
+}
+
+// component component.createProject.submitButton
+async function oncreateProject() {
+  // capability capability.createProject
+  if (False) { /* confirm required */ }
+  dispatch('event.projectCreated');
+}
+// interaction interaction.submitProject: click -> capability.createProject
+const submitProjectInteraction = { trigger: 'click', invokes: 'capability.createProject' };
+export function SubmitButton({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.createProject.submitButton" data-name="SubmitButton" />;
+}
+
+// component component.projectForm
+// presents entity.project
+export function ProjectForm({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.projectForm" data-name="ProjectForm" />;
+}
+
+// component component.dashboard.sidebar
+export function Sidebar({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.dashboard.sidebar" data-name="Sidebar" />;
+}
+
+// component component.dashboard.main
+export function Main({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.dashboard.main" data-name="Main" />;
+}
+
+// component component.dashboard.header
+export function Header({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.dashboard.header" data-name="Header" />;
+}
+
+// component component.projectDetail.projectOverview
+export function ProjectOverview({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.projectDetail.projectOverview" data-name="ProjectOverview" />;
+}
+
+// component component.projectDetail.taskList
+export function TaskList({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.projectDetail.taskList" data-name="TaskList" />;
+}
+
+// surface surface.dashboard
+// presents entity.project
+export function DashboardState({ name }) { return <section data-state={name} />; }
+
+// surface surface.projectDetail
+// presents entity.project
+export function ProjectDetailState({ name }) { return <section data-state={name} />; }
+
+// surface surface.createProject
+// presents entity.project
+export function CreateProjectState({ name }) { return <section data-state={name} />; }
+
+export default function ProjectManager() { return <div data-xir="exp.projectManager" />; }

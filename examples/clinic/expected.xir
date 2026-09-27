@@ -1,31 +1,57 @@
 experience Clinic {
   goal: "Help clinics manage appointments."
   version: 1
-  actors { patient clinician admin }
-  requirement: "Only clinicians can confirm appointments."
-  entity Appointment { id: ID  status }
-  entity Patient { id: ID  name }
+
+  requirement requirement {
+    claim: "Only clinicians can confirm appointments."
+  }
+  permission appointment.confirm {
+    description: "Confirm an appointment."
+  }
+  actor patient {
+  }
+  actor clinician {
+    permissions { permission.appointment.confirm }
+  }
+  actor admin {
+  }
+  entity Appointment {
+    id: ID
+    status: draft | active | archived
+  }
+  entity Patient {
+    id: ID
+    name: Text
+  }
   capability bookAppointment {
+    id: capability.bookAppointment
     input { patient: Patient }
-    output: Appointment
+    output: entity.appointment
   }
   capability confirmAppointment {
+    id: capability.confirmAppointment
     input { appointment: Appointment }
-    requires: appointment.confirm
-    effects: appointment.status = active
+    requires: permission.appointment.confirm
+    mutates { field.appointment.status }
     confirmation: required
     audit: required
-    provenance { source: human confidence: confirmed }
   }
   surface Schedule {
-    presents: Appointment[]
+    id: surface.schedule
+    presents: entity.appointment
     components { Calendar AppointmentList }
     states: loading empty populated error
   }
   flow BookAppointment {
-    actor: patient
-    Schedule -> BookAppointment
-    BookAppointment -> validating
-    validating -> Appointment
+    id: flow.bookAppointment
+    actor: actor.patient
+    step ScheduleToBookAppointment {
+      from: surface.schedule
+    }
+    step BookAppointmentTovalidating {
+    }
+    step validatingToAppointment {
+      to: entity.appointment
+    }
   }
 }

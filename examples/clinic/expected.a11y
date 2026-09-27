@@ -1,6 +1,6 @@
-Schedule.Calendar: role=auto focusable=true name=Calendar
-Schedule.AppointmentList: role=auto focusable=true name=AppointmentList
-Schedule state loading: announced=true
-Schedule state empty: announced=true
-Schedule state populated: announced=true
-Schedule state error: announced=true
+component.schedule.calendar: role=region name=Calendar focusable=true
+component.schedule.appointmentList: role=region name=AppointmentList focusable=true
+state.schedule.loading: aria-live=polite announced=true
+state.schedule.empty: aria-live=polite announced=true
+state.schedule.populated: aria-live=polite announced=true
+state.schedule.error: aria-live=polite announced=true

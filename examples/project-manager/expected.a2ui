@@ -1,1 +1,3 @@
-A2UI surface Dashboard presents Project[]
+A2UI surface Dashboard presents entity.project [surface.dashboard]
+A2UI surface ProjectDetail presents entity.project [surface.projectDetail]
+A2UI surface CreateProject presents entity.project [surface.createProject]

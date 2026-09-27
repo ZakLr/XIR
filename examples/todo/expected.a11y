@@ -1,4 +1,4 @@
-Main state loading: announced=true
-Main state empty: announced=true
-Main state populated: announced=true
-Main state error: announced=true
+state.main.loading: aria-live=polite announced=true
+state.main.empty: aria-live=polite announced=true
+state.main.populated: aria-live=polite announced=true
+state.main.error: aria-live=polite announced=true

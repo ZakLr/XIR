@@ -1,8 +1,8 @@
+// Playwright tests generated from the semantic graph.
+// Each test walks interaction -> capability -> permission -> mutation -> event -> state.
 import { test, expect } from '@playwright/test';
 
-test('Refresh', async ({ page }) => {
-  // step: Overview
-  // step: Refresh
-  // step: Refresh
-  // step: Metric
+test('flow Refresh', async ({ page }) => {
+  // step step.refresh.overviewToRefresh: surface.overview --None--> None
+  // step step.refresh.refreshToMetric: None --None--> entity.metric
 });

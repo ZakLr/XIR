@@ -1,42 +1,149 @@
+// XIR grammar.
+//
+// Rule shape: every alternative that must be told apart gets its OWN named rule.
+// Lark filters anonymous literal tokens out of callbacks, so a single rule with
+// several alternatives cannot report which alternative matched.
+//
+// Backward compatible: flat `components { A B }`, `states: a b c`, `A -> B` edges
+// and legacy `effects:` free text still parse and are upgraded during normalization (§31).
 start: experience
+
 experience: "experience" NAME "{" exp_body "}"
-exp_body: (goal | version_stmt | actors | meta_stmt | entity | capability | surface | flow)*
-goal: "goal" ":"? ESCAPED_STRING
+exp_body: (goal_stmt | version_stmt | actors_legacy | goal_decl | actor_block | actor_flat
+          | perm_block_decl | perm_flat | event_decl | entity_decl | capability_decl
+          | component_decl | interaction_decl | machine_decl | invariant_decl
+          | surface_decl | flow_decl | meta_decl | provenance_block)*
+
+// ---------- statements ----------
+goal_stmt: "goal" ":"? ESCAPED_STRING
 version_stmt: "version" ":"? VERSION
-actors: "actors" "{" NAME* "}"
-meta_stmt: ("requirement" | "observation" | "decision" | "assumption" | "inference" | "proposal") ":"? ESCAPED_STRING
+actors_legacy: "actors" "{" NAME* "}"
 provenance_block: "provenance" "{" prov_attr* "}"
 prov_attr: NAME ":" PROVVAL
-entity: "entity" NAME "{" (attr | provenance_block)* "}"
+
+// ---------- evidence / statements with bodies (§20) ----------
+meta_decl: META_KW (meta_simple_colon | meta_simple | meta_named | meta_anon)
+meta_simple_colon: ":" ESCAPED_STRING
+meta_simple: ESCAPED_STRING
+meta_named: NAME "{" meta_field* "}"
+meta_anon: "{" meta_field* "}"
+meta_field: prov_claim | prov_conf | prov_evid
+prov_claim: "claim" ":" ESCAPED_STRING
+prov_conf: "confidence" ":" CONF
+prov_evid: "evidence" "{" DOTTED* "}"
+
+// ---------- declarations ----------
+goal_decl: "goal" NAME id_opt ("{" goal_field* "}" | goal_field*)
+goal_field: goal_id | decl_field
+goal_id: "id" ":" DOTTED
+
+actor_block: "actor" NAME id_opt "{" actor_field* "}"
+actor_flat: "actor" NAME id_opt actor_field*
+actor_field: perm_block | decl_field
+perm_block: "permissions" "{" DOTTED* "}"
+
+perm_block_decl: "permission" DOTTED id_opt "{" decl_field* "}"
+perm_flat: "permission" DOTTED id_opt decl_field*
+
+event_decl: "event" NAME id_opt
+
+id_opt: ("id" ":" DOTTED)?
+decl_field: NAME ":" LINE
+
+entity_decl: "entity" NAME id_opt "{" (attr | ent_id)* "}"
+ent_id: "id" ":" DOTTED
 attr: NAME ":" union_type
 union_type: NAME_BRACKET ("|" NAME_BRACKET)*
-capability: "capability" NAME "{" (cap_input | cap_output | cap_requires | cap_effects | cap_confirm | cap_audit | provenance_block)*
-cap_body: (cap_input | cap_output | cap_requires | cap_effects | cap_confirm | cap_audit | provenance_block)*
+
+capability_decl: "capability" NAME id_opt "{" (cap_id | cap_input | cap_output
+                | cap_requires | cap_consumes | cap_produces | cap_mutates
+                | cap_emits | cap_confirm | cap_audit | cap_effects
+                | provenance_block)* "}"
+cap_id: "id" ":" DOTTED
 cap_input: "input" "{" attr* "}"
-cap_output: "output" ":"? NAME
-cap_requires: "requires" ":"? DOTTED (","? DOTTED)*
-cap_effects: "effects" ":"? EFFECT_LINE
+cap_output: "output" ":"? DOTTED
+cap_requires: "requires" ref_list
+cap_consumes: "consumes" ref_list
+cap_produces: "produces" ref_list
+cap_mutates: "mutates" "{" DOTTED* "}"
+cap_emits: "emits" ref_list
+cap_effects: "effects" ":"? LINE
 cap_confirm: "confirmation" ":"? CONF
 cap_audit: "audit" ":"? CONF
-surface: "surface" NAME "{" (surf_presents | surf_comp | surf_states | provenance_block)* "}"
-surf_body: (surf_presents | surf_comp | surf_states | provenance_block)*
+ref_list: ":"? DOTTED (","? DOTTED)*
+
+component_decl: "component" NAME id_opt "{" (comp_id | comp_presents | comp_invokes
+              | comp_states | comp_children)* "}"
+comp_id: "id" ":" DOTTED
+comp_presents: "presents" ":"? DOTTED
+comp_invokes: comp_invokes_block | comp_invokes_flat
+comp_invokes_block: "invokes" "{" DOTTED* "}"
+comp_invokes_flat: "invokes" ":"? DOTTED
+comp_states: comp_states_block | comp_states_flat
+comp_states_block: "states" "{" DOTTED* "}"
+comp_states_flat: "states" ":"? DOTTED
+comp_children: comp_children_block | comp_children_flat
+comp_children_block: "contains" "{" DOTTED* "}"
+comp_children_flat: "contains" ":"? DOTTED
+
+interaction_decl: "interaction" NAME id_opt "{" (int_id | int_trigger | int_target | int_invokes)* "}"
+int_id: "id" ":" DOTTED
+int_trigger: "trigger" ":"? NAME
+int_target: "target" ":"? DOTTED
+int_invokes: "invokes" ":"? DOTTED
+
+machine_decl: "state" NAME id_opt "{" (m_id | m_initial | m_state)* "}"
+m_id: "id" ":" DOTTED
+m_initial: "initial" ":"? NAME
+m_state: NAME "{" trans* "}"
+trans: trans_on | trans_bare
+trans_on: "on" DOTTED trans_target? trans_guard? trans_action?
+trans_bare: "->" NAME
+trans_target: "->" NAME
+trans_guard: "when" DOTTED
+trans_action: "do" DOTTED
+
+invariant_decl: "invariant" NAME id_opt "{" (inv_id | decl_field)* "}"
+inv_id: "id" ":" DOTTED
+
+surface_decl: "surface" NAME id_opt "{" (surf_id | surf_presents | surf_comp
+              | surf_states | surf_machine | provenance_block)* "}"
+surf_id: "id" ":" DOTTED
 surf_presents: "presents" ":"? PRESENT
-surf_comp: "components" "{" NAME* "}" | "layout" "{" NAME* "}"
+surf_comp: comp_block | layout_block
+comp_block: "components" "{" NAME* "}"
+layout_block: "layout" "{" NAME* "}"
 surf_states: "states" ":"? NAME (","? NAME)*
-flow: "flow" NAME "{" (flow_actor | flow_edge | flow_step | provenance_block)* "}"
-flow_body: (flow_actor | flow_edge | flow_step | provenance_block)*
-flow_actor: "actor" ":"? NAME
+surf_machine: "machine" ":"? DOTTED
+
+flow_decl: "flow" NAME id_opt "{" (flow_id | flow_goal | flow_actor | flow_entry
+             | flow_step | flow_step_ref | flow_edge | flow_branch | provenance_block)* "}"
+flow_id: "id" ":" DOTTED
+flow_goal: "goal" ":"? DOTTED
+flow_actor: "actor" ":"? DOTTED
+flow_entry: "entry" "{" decl_field* "}"
+flow_step: "step" NAME id_opt "{" decl_field* "}"
+flow_step_ref: "step" ":" DOTTED
 flow_edge: DOTTED "->" DOTTED
-flow_step: "step" ":"? DOTTED
+flow_branch: "branch" NAME id_opt "{" (branch_from | branch_case)* "}"
+branch_from: "from" ":" DOTTED
+branch_case: DOTTED "->" DOTTED
+
+// ---------- terminals ----------
 DOTTED: /[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*/
-NAME_BRACKET: /[A-Za-z_][A-Za-z0-9_\.\[\]]+/
+// `*` not `+`: a single-character type name (P, T) is legal
+NAME_BRACKET: /[A-Za-z_][A-Za-z0-9_\.\[\]]*/
+PRESENT: /[A-Za-z_][A-Za-z0-9_\.\[\]]*/
 VERSION: /[A-Za-z0-9][A-Za-z0-9\.\-]*/
-PROVVAL: /[^\n,}]+/
-PRESENT: /[A-Za-z_][A-Za-z0-9_\.\[\]]+/
-EFFECT_LINE: /[^\n}]+/
+META_KW: "requirement" | "observation" | "decision" | "assumption" | "inference" | "proposal"
+// LINE/PROVVAL refuse to start at a quote so they never out-compete ESCAPED_STRING.
+PROVVAL: /(?!["'])[^\n,}]+/
+LINE: /(?!["'])[^\n}]+/
 CONF: "required" | "optional" | "true" | "false"
+    | "confirmed" | "probable" | "inferred" | "tentative" | "proposed" | "deprecated" | "unknown"
 %import common.CNAME -> NAME
 %import common.ESCAPED_STRING
 %import common.WS
 %ignore WS
 %ignore /#[^\n]*/
+%ignore /\/\/[^\n]*/

@@ -1,22 +1,36 @@
 experience Todo {
   goal: "Track tasks."
-  actors { user }
-  entity Todo { id: ID  title  done: Bool }
+
+  actor user {
+  }
+  entity Todo {
+    id: ID
+    title: Text
+    done: Bool
+  }
   capability addTodo {
+    id: capability.addTodo
     input { title: Text }
-    output: Todo
+    output: entity.todo
   }
   capability completeTodo {
+    id: capability.completeTodo
     input { todo: Todo }
-    effects: todo.done = true
+    mutates { field.todo.done }
   }
   surface Main {
-    presents: Todo[]
+    id: surface.main
+    presents: entity.todo
     states: loading empty populated error
   }
   flow AddTodo {
-    actor: user
-    Main -> AddTodo
-    AddTodo -> Todo
+    id: flow.addTodo
+    actor: actor.user
+    step MainToAddTodo {
+      from: surface.main
+    }
+    step AddTodoToTodo {
+      to: entity.todo
+    }
   }
 }

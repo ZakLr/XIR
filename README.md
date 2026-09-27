@@ -1,111 +1,122 @@
-<p align="center">
-  <img src="docs/logo.svg" width="96" alt="XIR logo"/>
-</p>
+# XIR — the semantic IR for interactive products
 
-<h1 align="center">XIR — the semantic IR for interactive products</h1>
+> Model intent, capabilities, surfaces, state and flows once.
+> Compile to UI, tests, docs and agent tools.
 
-<p align="center">
-  Model intent, capabilities, surfaces, state and flows once.
-  Compile to UI, tests, docs and agent tools.
-</p>
+XIR answers agent questions by **traversing typed semantic relationships**, not by
+matching strings. This is the whole design:
 
-<p align="center">
-  <a href=".github/workflows/ci.yml"><img src="https://img.shields.io/badge/ci-passing-brightgreen" alt="CI"/></a>
-  <img src="https://img.shields.io/badge/license-AGPLv3%2B-blue" alt="AGPLv3+"/>
-  <img src="https://img.shields.io/badge/python-%3E%3D3.10-blue" alt="Python"/>
-  <img src="https://img.shields.io/badge/version-1.0.0-purple" alt="1.0.0"/>
-</p>
+```text
+$ xir trace examples/project-manager/app.xir archiveProject
+CAPABILITY: archiveProject
+  REQUIRES: project.archive      [permission.project.archive]
+  MUTATES:  status               [field.project.status]
+  EMITS:    ProjectArchived      [event.projectArchived]
+  EXPOSED BY: ArchiveButton      [component.projectDetail.archiveButton]
+  STATE:   confirming            [state.projectDetailActions.confirming]
+```
 
-> One-liner: XIR is a compiler-grade semantic layer for apps — agents query slices of the
-> product model instead of drowning in code, screenshots and prose.
+## Why
 
-## Quickstart
+An interactive product lives as disconnected artifacts: code, screenshots, Figma,
+prose, schemas. An agent reading all of that burns tokens, guesses at intent, and
+cannot tell a *relationship* from a *coincidence of words*.
+
+XIR is a compiler-grade intermediate representation. You author semantics; the model
+projects to React, HTML, A2UI, docs, accessibility metadata and Playwright tests.
+
+## Install
 
 ```bash
 pip install -e .[dev]
-pytest                                   # 14 tests
-xir parse examples/project-manager/app.xir
-xir validate examples/project-manager/app.xir
-xir compile examples/project-manager/app.xir --target react
-xir bench                                # 20-task suite
+pytest
 ```
+
+## The pipeline
+
+```text
+source .xir
+  -> strict parse          (invalid XIR raises; it never degrades silently)
+  -> syntax AST            (what the file literally says)
+  -> normalization         (owns identity and reference resolution)
+  -> semantic IR           (the source of truth)
+  -> typed graph           (every edge has a relation)
+  -> validate / query / patch / diff / compile
+```
+
+Nothing downstream of the IR reads the syntax AST.
+
+## What an agent can do
+
+| Question | Command |
+|---|---|
+| What happens when the user clicks Archive? | `xir trace app.xir archiveProject` |
+| What permission is required? | `xir query app.xir "who can archiveProject"` |
+| What changes if this field changes? | `xir query app.xir "affected field.project.status"` |
+| Where is this implemented in the UI? | `xir follow app.xir capability.archiveProject invokes` |
+| Give me a compact slice of this surface | `xir inspect app.xir surface.dashboard` |
+| What is wrong with this model? | `xir validate app.xir` |
+| Rename it without breaking references | `xir patch app.xir "patch { rename capability.archiveProject to_name: archive }"` |
+| Generate the React app | `xir compile app.xir --target react --out src/App.jsx` |
+| Generate behaviour tests | `xir compile app.xir --target playwright` |
+
+## Ontology
+
+`Experience` · `Goal` · `Actor` · `Permission` · `Entity` · `Field` · `Event` ·
+`Capability` · `Surface` · `Component` · `Interaction` · `Machine` · `State` ·
+`Transition` · `Flow` · `Step` · `Branch` · `Invariant` · provenance/evidence
+
+Full definitions in [`spec/ontology.md`](spec/ontology.md); the graph in
+[`spec/semantic-graph.md`](spec/semantic-graph.md).
+
+## Stable identity
+
+Names are display. **IDs are identity.**
+
+```text
+rename capability.archiveProject to_name: archive
+  -> same id, new name, zero reference breakage
+
+rename capability.archiveProject to_id: capability.project.archive
+  -> identity change; every reference rewritten atomically, or the patch rolls back
+```
+
+## Safety
+
+A patch is a transaction: resolve → apply → validate → commit or rollback. It never
+leaves a partially invalid model, and `remove` refuses while anything still points at
+the target.
 
 ## Examples
 
-| Example | Domain | Highlights |
-|---|---|---|
-| `examples/project-manager/` | team projects | full ontology, provenance, audit |
-| `examples/todo/` | tasks | minimal core |
-| `examples/ecommerce/` | shop + checkout | confirmation, permissions |
-| `examples/dashboard/` | metrics | states, refresh flow |
-| `examples/clinic/` | healthcare extension | version, requirement, cross-domain proof |
+| Example | Shows |
+|---|---|
+| `examples/project-manager` | the full ontology: goals, permissions, actors, events, state machines, interactions, invariants, evidence |
+| `examples/clinic` | a domain extension (healthcare) |
+| `examples/ecommerce` | confirmation and permissions |
+| `examples/todo` | the minimal core |
+| `examples/dashboard` | states and a refresh flow |
 
-Each ships `app.xir` + `expected.{html,react,a2ui,xir,docs,a11y,playwright}` goldens.
+Each ships `app.xir` plus `expected.{xir,html,react,a2ui,docs,a11y,playwright}` goldens.
 
-## 1. Problem
-Interactive products live as disconnected artifacts: code, screenshots, Figma, prose, schemas.
-Agents drown in tokens and ambiguity with no shared semantic model.
+## Benchmarks
 
-## 2. Why existing approaches are insufficient
-See `research/`: UI frameworks render pixels; API schemas cover data; card formats (A2UI/Adaptive)
-cover rendering; MCP covers tool wire; UML covers diagrams. None links intent → capabilities →
-surfaces → state → flows → mappings with queries, patches, diffs, provenance.
+`python benchmarks/tasks.py` runs retrieval, reasoning, UI, state, adversarial and
+modification tasks, plus a context-cost report. Results are labelled
+**MEASURED**, **SIMULATED** or **INFERRED** — see
+[`benchmarks/report.md`](benchmarks/report.md). Simulated retrieval counts are *not*
+agent performance and are never presented as such.
 
-## 3. Core thesis
-A compact semantic IR helps agents do product engineering with fewer tokens, fewer mistakes,
-fewer retrievals, better behavioral fidelity than conventional context.
+## Documentation
 
-## 4. Ontology
-Core: Concept, Capability, Surface, State, Flow (+ Entity/Actor). Full: `spec/ontology.md`,
-semantics `spec/semantics.md`, validation `spec/validation.md`, queries `spec/queries.md`,
-patches `spec/patches.md`, provenance `spec/provenance.md`, versioning `spec/versioning.md`.
+- [`docs/v0.3-audit.md`](docs/v0.3-audit.md) — what v0.2 could not express, and why
+- [`spec/`](spec/) — grammar, semantics, ontology, graph, queries, patches, validation
 
-## 5. Syntax
-```text
-experience ProjectManager {
-  goal: "Help teams organize and execute work."
-  actors { member manager admin }
-  entity Project { id: ID  name: Text  status: draft | active | archived }
-  capability archiveProject {
-    input { project: Project }
-    requires: project.archive
-    effects: project.status = archived
-    confirmation: required
-  }
-  surface Dashboard {
-    presents: Project[]
-    components { Sidebar Main }
-    states: loading empty populated error
-  }
-  flow CreateProject {
-    actor: member
-    Dashboard -> CreateProject
-  }
-}
-```
-Strict Lark grammar + tolerant fallback (`src/xir/parser/`).
+## Status
 
-## 6. Complete example
-`examples/project-manager/app.xir` (+ todo/ecommerce/dashboard/clinic), each with
-`expected.{html,react,a2ui,xir,docs,a11y,playwright}` goldens.
-
-## 7. How agents use it
-`xir parse|validate|query|inspect|explain|diff|compile|test|bench|patch` — query slices (L0–L6),
-trace capabilities, propose patches, validate, diff. Workflow: `spec/patches.md`.
-
-## 8. How it compiles
-`Source → Lark → AST → NetworkX graph → validate → query/patch/diff → HTML/React/A2UI/docs/a11y/Playwright`
-(`src/xir/compiler/` + `dsl.py` canonical emitter + HTML extractor).
-
-## 9. Benchmark methodology
-`benchmarks/tasks.py` (20 tasks), `reconstruct.py` (semantic rebuild), `roundtrip.py`
-(DSL→canonical→reparse stability), `baseline.py` (IXL-vs-baselines proxy).
-Report: `benchmarks/report.md`.
-
-## 10. Known limitations
-Tree-sitter incremental parsing, learned retrieval priorities, formal temporal proofs, and
-blinded large-scale agent trials are future work. See OPEN_QUESTIONS.md.
+v0.3. The semantic model is the product; parsing and rendering are deliberately
+secondary. Known gaps are tracked in `OPEN_QUESTIONS.md`.
 
 ## License
-AGPLv3+ — free to use, modify and share; network use (SaaS) must offer source (Sec 13).
-See `LICENSE`. Commercial relicensing not offered.
+
+AGPLv3+.

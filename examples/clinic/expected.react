@@ -1,4 +1,50 @@
-// Clinic — generated from XIR
-export function Clinic() {
-  // surface Schedule: Appointment[] ['loading', 'empty', 'populated', 'error']
-  return null; }
+// Generated from XIR semantic model. Do not edit by hand.
+// Each surface, component, capability and state below is traceable to a semantic id.
+import React, { useState, useCallback } from 'react';
+
+
+export const capabilities = {
+  bookAppointment: { id: 'capability.bookAppointment', requires: [], mutates: [], emits: [], confirmation: false, audit: false },
+  confirmAppointment: { id: 'capability.confirmAppointment', requires: ['permission.appointment.confirm'], mutates: ['field.appointment.status'], emits: [], confirmation: true, audit: true },
+};
+
+// state machine machine.schedule.schedule
+const initialSchedule states = 'state.schedule.loading';
+const loading = { id: 'state.schedule.loading', name: 'loading' };
+const empty = { id: 'state.schedule.empty', name: 'empty' };
+const populated = { id: 'state.schedule.populated', name: 'populated' };
+const error = { id: 'state.schedule.error', name: 'error' };
+const transitionsSchedule states = {
+};
+function useSchedule states(initial = 'state.schedule.loading') {
+  const [state, setState] = useState(initial);
+  const send = useCallback((event) => {
+    const t = transitionsSchedule states[event];
+    if (t && t.from === state) setState(t.to);
+  }, [state]);
+  return [state, send];
+}
+
+// component component.schedule.calendar
+export function Calendar({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.schedule.calendar" data-name="Calendar" />;
+}
+
+// component component.schedule.appointmentList
+export function AppointmentList({ onEvent = () => {} } = {}) {
+  return <div data-xir="component.schedule.appointmentList" data-name="AppointmentList" />;
+}
+
+// surface surface.schedule
+// presents entity.appointment
+export function ScheduleView() {
+  const [state, send] = useSchedule states();
+  if (state === 'state.schedule.loading') return <ScheduleState name={'loading'} />;
+  if (state === 'state.schedule.empty') return <ScheduleState name={'empty'} />;
+  if (state === 'state.schedule.populated') return <ScheduleState name={'populated'} />;
+  if (state === 'state.schedule.error') return <ScheduleState name={'error'} />;
+  return null;
+}
+export function ScheduleState({ name }) { return <section data-state={name} />; }
+
+export default function Clinic() { return <div data-xir="exp.clinic" />; }

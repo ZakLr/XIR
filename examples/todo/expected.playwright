@@ -1,8 +1,8 @@
+// Playwright tests generated from the semantic graph.
+// Each test walks interaction -> capability -> permission -> mutation -> event -> state.
 import { test, expect } from '@playwright/test';
 
-test('AddTodo', async ({ page }) => {
-  // step: Main
-  // step: AddTodo
-  // step: AddTodo
-  // step: Todo
+test('flow AddTodo', async ({ page }) => {
+  // step step.addTodo.mainToAddTodo: surface.main --None--> None
+  // step step.addTodo.addTodoToTodo: None --None--> entity.todo
 });

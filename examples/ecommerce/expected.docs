@@ -2,7 +2,10 @@
 
 Sell goods.
 
-## Entity Order: id: ID  status
-## Capability checkout (in={'order': 'Order'} out=Order requires=[])
-## Surface Storefront: presents Order[], states ['loading', 'populated', 'error']
-## Flow Checkout: Storefront -> Checkout -> Checkout -> Order
+## Entity Order: id: ID, status: draft | active | archived
+## Capability checkout `capability.checkout`
+- requires: []
+- mutates: []
+- emits: []
+## Surface Storefront `surface.storefront` — components []
+## Flow Checkout `flow.checkout` — actor actor.buyer, goal None
