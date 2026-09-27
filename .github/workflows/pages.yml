@@ -1,0 +1,38 @@
+name: pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "spec/**"
+      - "research/**"
+      - "branding/**"
+      - "mkdocs.yml"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# The docs workflow builds the site; this one only deploys the artifact. One
+# build, so the deployed site can never differ from the one CI verified.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: download the verified build
+        uses: actions/download-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

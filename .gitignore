@@ -49,3 +49,7 @@ _rt_tmp.xir
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# docs build artifacts
+.site-src/
+site/

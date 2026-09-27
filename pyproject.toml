@@ -1,12 +1,13 @@
 [project]
-name = "xir"
+name = "xir-core"
 version = "0.3.0"
-description = "XIR — the semantic IR for interactive products: model intent, capabilities, surfaces, state and flows; compile to UI, tests, docs and agent tools"
+description = "XIR — the semantic IR for interactive products. Model intent, capabilities, surfaces, state machines and flows; compile to UI, tests, docs and agent tools."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
 authors = [{name = "XIR contributors"}]
-keywords = ["ui", "dsl", "ir", "agents", "mcp", "a2ui", "compiler", "ux", "semantic-model"]
+keywords = ["ui", "dsl", "ir", "intermediate-representation", "agents", "mcp", "a2ui",
+            "compiler", "ux", "semantic-model", "product-model", "codegen", "llm"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -22,14 +23,19 @@ dependencies = [
   "click>=8.0",
 ]
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "mcp>=2.0", "anyio>=4.0"]
+mcp = ["mcp>=2.0"]
+docs = ["mkdocs>=1.6", "mkdocs-material>=9.5"]
+brand = ["pillow>=10.0", "matplotlib>=3.7"]
 [project.urls]
 Homepage = "https://github.com/ZakLr/XIR"
-Documentation = "https://github.com/ZakLr/XIR#readme"
+Documentation = "https://zaklr.github.io/XIR/"
+Changelog = "https://github.com/ZakLr/XIR/blob/main/CHANGELOG.md"
 Repository = "https://github.com/ZakLr/XIR"
 Issues = "https://github.com/ZakLr/XIR/issues"
 [project.scripts]
 xir = "xir.cli:main"
+xir-mcp = "xir.mcp_server:_console"
 # pre-rename name, kept as an alias so existing muscle memory and scripts keep working
 ixl = "xir.cli:main"
 [build-system]

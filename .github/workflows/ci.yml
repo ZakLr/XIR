@@ -54,3 +54,53 @@ jobs:
           /tmp/venv/bin/pip install dist/*.whl
           /tmp/venv/bin/xir validate examples/project-manager/app.xir
           /tmp/venv/bin/python -c "import xir.ir as I; m=I.load_file('examples/project-manager/app.xir'); print(m.id, len(m.all_ids()))"
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .[docs]
+      # strict mode: a broken relative link fails the build, so docs cannot rot
+      - name: build the site (strict)
+        run: python branding/build_site.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publish:
+    name: publish to PyPI
+    # tag-driven, so a version bump is the only thing that can publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test, benchmark, package, docs]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write          # trusted publishing, no long-lived token needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - name: check the tag matches the version
+        run: |
+          python - <<'PY'
+          import re, pathlib, sys
+          tag = pathlib.Path("pyproject.toml")
+          version = re.search(r'^version = "([^"]+)"', tag.read_text(), re.M).group(1)
+          expected = f"v{version}"
+          actual = "${GITHUB_REF_NAME}"
+          if actual != expected:
+              sys.exit(f"tag {actual} does not match pyproject version {version}")
+          print(f"ok: {actual} matches version {version}")
+          PY
+      - run: python -m build
+      - run: pip install twine
+      - run: twine check dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1
+

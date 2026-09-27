@@ -48,12 +48,39 @@ using the model wrong. Traverse instead.
 ## Setup
 
 ```bash
-pip install xir            # or: pip install -e . from a checkout
+pip install xir-core       # the distribution is xir-core; the command is `xir`
 xir --help
 ```
 
 Requires Python ≥ 3.10. No runtime services, no network, no build step to *read* a
 model. For everything below, `app.xir` is any XIR model file.
+
+### If your client speaks MCP
+
+Prefer the tools over shelling out. They route to the same library as the CLI, so the
+answer is identical, but you get structured results and no parsing.
+
+```bash
+pip install 'xir-core[mcp]'
+xir-mcp path/to/app.xir            # stdio server
+xir-mcp path/to/app.xir --list-tools
+```
+
+| Tool | Use it instead of |
+| --- | --- |
+| `xir_summary(level)` | `xir parse --level N` |
+| `xir_validate()` | `xir validate` |
+| `xir_trace(ref)` | `xir trace` |
+| `xir_inspect(ref)` | `xir inspect` |
+| `xir_query(phrase)` | `xir query "..."` |
+| `xir_follow(ref, relation, depth)` | `xir follow` |
+| `xir_diff(other_path)` | `xir diff` |
+| `xir_compile(target)` | `xir compile --target` |
+| `xir_health()` | `python scripts/xir_health.py` |
+
+The one that changes how you work is `xir_trace`: it returns the whole behavioural
+chain for a capability, so you can answer "what happens when the user does X" without
+reading the model at all.
 
 ## Orient before you act
 

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="120" viewBox="0 0 720 120"
+     role="img" aria-label="XIR">
+  <g transform="translate(8, 6)">
+    <g fill="none" stroke-width="6.5" stroke-linejoin="round">
+      <path d="M54.00 10.00 L98.00 54.00 L54.00 98.00 L10.00 54.00 Z" stroke="#22D3EE"/>
+      <path d="M54.00 29.00 L79.00 54.00 L54.00 79.00 L29.00 54.00 Z" stroke="#A78BFA"/>
+    </g>
+    <circle cx="54" cy="54" r="8.5" fill="#F472B6"/>
+  </g>
+  <text x="128" y="80" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="66" font-weight="700" letter-spacing="-1.5" fill="#E5E7EB">XIR</text>
+</svg>

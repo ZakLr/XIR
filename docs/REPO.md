@@ -37,17 +37,22 @@ src/xir/
   validator/   graph-based semantic checks
   patch/       atomic transactions
   diff/        semantic, rename-aware
-  compiler/    emitters + canonical serializer
+  compiler/    emitters + canonical serializer + the TARGETS registry
   cli/         the xir command
+  mcp_server.py  xir-mcp: the same library, exposed as MCP tools
+branding/      generators for the logo, figures, demo GIF and the docs site
 
 spec/          grammar, ontology, semantics, semantic-graph, queries,
                patches, validation, provenance, versioning
 research/      landscape, related systems, competitors, differentiation,
                principles, open problems
-docs/          this file, AGENTS.md, v0.3-audit.md, logo
+docs/          this file, AGENTS.md, v0.3-audit.md, ROADMAP, COMMUNITY,
+               STAR_HISTORY, index.md, logo, generated assets
 examples/      five models, each with golden projections
 benchmarks/    the suite and the results report
-tests/         80 tests
+tests/         118 tests
+skills/xir/    the installable agent skill
+mkdocs.yml     site config; branding/build_site.py stages and builds it
 ```
 
 ### The one architectural rule
@@ -78,15 +83,37 @@ git clone https://github.com/ZakLr/XIR.git
 cd XIR
 pip install -e .[dev]
 
-pytest -q                    # 101 tests
+pytest -q                    # 118 tests
 python benchmarks/tasks.py   # semantic benchmark
 xir validate examples/project-manager/app.xir
 xir trace examples/project-manager/app.xir archiveProject
+xir-mcp examples/project-manager/app.xir --list-tools   # MCP tool schema
 ```
 
 Requires Python ≥ 3.10. Dependencies: `lark`, `pydantic`, `networkx`, `click`.
 
+Extras: `.[dev]` tests, `.[mcp]` the MCP server, `.[docs]` the site, `.[brand]` the
+asset generators.
+
 The `ixl` command is kept as an alias of `xir` from before the rename.
+
+### Brand assets and the site
+
+Every image in the README is generated, not hand-drawn, so it cannot drift from the
+code it depicts:
+
+```bash
+pip install -e .[brand,docs]
+python branding/generate_assets.py    # logo, wordmark, favicon, social card
+python branding/generate_diagram.py   # pipeline + the real semantic graph
+python branding/generate_demo.py      # records a real `xir` session to a GIF
+python branding/build_site.py         # stage the repo's markdown, build strict
+python branding/build_site.py --serve # live reload on http://127.0.0.1:8000
+```
+
+`build_site.py` mirrors the repository layout into `.site-src/` rather than copying
+text, so every relative link works on both GitHub and the site. It builds with
+`--strict`, which is why a broken link fails CI instead of shipping.
 
 ---
 

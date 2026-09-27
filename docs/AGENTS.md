@@ -42,7 +42,7 @@ the model wrong. Traverse instead.
 | `xir follow <f> <id> <relation>` | structural traversal, `--depth N` |
 | `xir diff <old> <new>` | semantic diff; renames ≠ remove+add |
 | `xir patch <f> "<patch>"` | atomic, validated mutation |
-| `xir compile <f> --target <t>` | react, html, a2ui, docs, a11y, playwright, xir |
+| `xir compile <f> --target <t>` | react, html, a2ui, docs, a11y, playwright, tests, xir |
 | `xir recover <f>` | best-effort parse; **always reports what it dropped** |
 | `xir test <f>` | validate + confirm projections and round-trip |
 | `xir bench` | run the semantic benchmark suite |

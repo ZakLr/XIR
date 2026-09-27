@@ -18,7 +18,7 @@ The language has three separate layers, on purpose.
 | [spec/grammar.md](../spec/grammar.md) | syntax — what the parser accepts |
 | [spec/ontology.md](../spec/ontology.md) | concepts — what the primitives are |
 | [spec/semantics.md](../spec/semantics.md) | meaning — identity, resolution, equivalence |
-| [spec/semantic-graph.md](semantic-graph.md) | node types, edge types, normalization, traversal |
+| [spec/semantic-graph.md](../spec/semantic-graph.md) | node types, edge types, normalization, traversal |
 
 ## Using it
 

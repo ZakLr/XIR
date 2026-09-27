@@ -20,7 +20,7 @@ cp -r skills/xir ~/.claude/skills/
 The skill needs the `xir` package available to the agent's Python:
 
 ```bash
-pip install xir
+pip install xir-core     # the command is `xir`
 ```
 
 ## Contents

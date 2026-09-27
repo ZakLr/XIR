@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="630" viewBox="0 0 1280 630">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0F19"/>
+      <stop offset="100%" stop-color="#0E1424"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="34%" r="46%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="630" fill="url(#g)"/>
+  <g opacity="0.55"><line x1="58" y1="0" x2="58" y2="630" stroke="#111827" stroke-width="1"/><line x1="116" y1="0" x2="116" y2="630" stroke="#111827" stroke-width="1"/><line x1="175" y1="0" x2="175" y2="630" stroke="#111827" stroke-width="1"/><line x1="233" y1="0" x2="233" y2="630" stroke="#111827" stroke-width="1"/><line x1="291" y1="0" x2="291" y2="630" stroke="#111827" stroke-width="1"/><line x1="349" y1="0" x2="349" y2="630" stroke="#111827" stroke-width="1"/><line x1="407" y1="0" x2="407" y2="630" stroke="#111827" stroke-width="1"/><line x1="465" y1="0" x2="465" y2="630" stroke="#111827" stroke-width="1"/><line x1="524" y1="0" x2="524" y2="630" stroke="#111827" stroke-width="1"/><line x1="582" y1="0" x2="582" y2="630" stroke="#111827" stroke-width="1"/><line x1="640" y1="0" x2="640" y2="630" stroke="#111827" stroke-width="1"/><line x1="698" y1="0" x2="698" y2="630" stroke="#111827" stroke-width="1"/><line x1="756" y1="0" x2="756" y2="630" stroke="#111827" stroke-width="1"/><line x1="815" y1="0" x2="815" y2="630" stroke="#111827" stroke-width="1"/><line x1="873" y1="0" x2="873" y2="630" stroke="#111827" stroke-width="1"/><line x1="931" y1="0" x2="931" y2="630" stroke="#111827" stroke-width="1"/><line x1="989" y1="0" x2="989" y2="630" stroke="#111827" stroke-width="1"/><line x1="1047" y1="0" x2="1047" y2="630" stroke="#111827" stroke-width="1"/><line x1="1105" y1="0" x2="1105" y2="630" stroke="#111827" stroke-width="1"/><line x1="1164" y1="0" x2="1164" y2="630" stroke="#111827" stroke-width="1"/><line x1="1222" y1="0" x2="1222" y2="630" stroke="#111827" stroke-width="1"/><line x1="0" y1="57" x2="1280" y2="57" stroke="#111827" stroke-width="1"/><line x1="0" y1="115" x2="1280" y2="115" stroke="#111827" stroke-width="1"/><line x1="0" y1="172" x2="1280" y2="172" stroke="#111827" stroke-width="1"/><line x1="0" y1="229" x2="1280" y2="229" stroke="#111827" stroke-width="1"/><line x1="0" y1="286" x2="1280" y2="286" stroke="#111827" stroke-width="1"/><line x1="0" y1="344" x2="1280" y2="344" stroke="#111827" stroke-width="1"/><line x1="0" y1="401" x2="1280" y2="401" stroke="#111827" stroke-width="1"/><line x1="0" y1="458" x2="1280" y2="458" stroke="#111827" stroke-width="1"/><line x1="0" y1="515" x2="1280" y2="515" stroke="#111827" stroke-width="1"/><line x1="0" y1="573" x2="1280" y2="573" stroke="#111827" stroke-width="1"/></g>
+  <rect width="1280" height="630" fill="url(#glow)"/>
+  <circle cx="1020.0" cy="190.0" r="9.0" fill="#F472B6"/><circle cx="1140.0" cy="300.0" r="7.0" fill="#A78BFA"/><circle cx="940.0" cy="340.0" r="7.0" fill="#A78BFA"/><line x1="1020.0" y1="190.0" x2="1140.0" y2="300.0" stroke="#A78BFA" stroke-width="2.0" opacity="0.55"/><line x1="1020.0" y1="190.0" x2="940.0" y2="340.0" stroke="#A78BFA" stroke-width="2.0" opacity="0.55"/><circle cx="1090.0" cy="470.0" r="6.0" fill="#22D3EE"/><line x1="1140.0" y1="300.0" x2="1090.0" y2="470.0" stroke="#22D3EE" stroke-width="2.0" opacity="0.4"/>
+
+  <g transform="translate(96.0, 150.0) scale(0.4)">
+    <g fill="none" stroke-width="8.5" stroke-linejoin="round">
+      <path d="M100.00 33.00 L167.00 100.00 L100.00 167.00 L33.00 100.00 Z" stroke="#22D3EE"/>
+      <path d="M100.00 61.00 L139.00 100.00 L100.00 139.00 L61.00 100.00 Z" stroke="#A78BFA"/>
+    </g>
+    <circle cx="100.0" cy="100.0" r="10.4" fill="#F472B6"/>
+  </g>
+
+  <text x="230.0" y="230.0" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="96.0" font-weight="700" letter-spacing="-2.0" fill="#E5E7EB">XIR</text>
+  <text x="232.0" y="288.0" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="27.0" font-weight="500" letter-spacing="1.2" fill="#94A3B8">SEMANTIC IR FOR INTERACTIVE PRODUCTS</text>
+
+  <text x="96.0" y="410.0" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="46.0" font-weight="600" fill="#E5E7EB">Give an agent the exact</text>
+  <text x="96.0" y="468.0" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="46.0" font-weight="600" fill="#E5E7EB">semantic slice it needs.</text>
+
+  <rect x="96.0" y="516.0" width="1088.0" height="62.0" rx="10.0"
+        fill="#0A0E17" stroke="#1E293B"/>
+  <text x="120.0" y="556.0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="25.0" fill="#22D3EE">$ xir trace app.xir archiveProject</text>
+  <text x="724.0" y="556.0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="25.0" fill="#F472B6">MUTATES field.project.status</text>
+</svg>

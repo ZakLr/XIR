@@ -216,3 +216,23 @@ def to_a11y(m: Model) -> str:
                 for st in mc.states:
                     lines.append(f"{st}: aria-live=polite announced=true")
     return "\n".join(lines) or "no surfaces"
+
+
+# One registry for every emitter, so the CLI, the MCP server and the docs
+# cannot disagree about which targets exist.
+def _registry() -> "dict[str, Callable[[Model], str]]":
+    from xir.compiler.dsl import to_xir
+    return {"react": to_react, "html": to_html, "a2ui": to_a2ui, "docs": to_docs,
+            "a11y": to_a11y, "playwright": to_playwright, "tests": to_tests,
+            "xir": to_xir}
+
+
+TARGETS: "dict[str, Callable[[Model], str]]" = _registry()
+
+
+def emit(m: "Model", target: str) -> str:
+    """Render the model with the named emitter."""
+    if target not in TARGETS:
+        raise ValueError(f"unknown target {target!r}; "
+                         f"expected one of {', '.join(sorted(TARGETS))}")
+    return TARGETS[target](m)

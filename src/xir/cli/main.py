@@ -84,14 +84,12 @@ def diff_cmd(old, new):
 
 @main.command()
 @click.argument("file")
-@click.option("--target", default="react",
-              type=click.Choice(["react", "html", "a2ui", "docs", "a11y", "playwright", "xir"]))
+@click.option("--target", default="react", type=click.Choice(sorted(E.TARGETS)),
+              help="projection to emit")
 @click.option("--out", type=click.Path(), help="write to a file instead of stdout")
 def compile(file, target, out):
     m = _model(file)
-    fn = {"react": E.to_react, "html": E.to_html, "a2ui": E.to_a2ui, "docs": E.to_docs,
-          "a11y": E.to_a11y, "playwright": E.to_playwright, "xir": to_xir}[target]
-    text = fn(m)
+    text = E.emit(m, target)
     if out:
         click.echo(f"wrote {out}", err=True)
         with open(out, "w", encoding="utf-8") as fh:
