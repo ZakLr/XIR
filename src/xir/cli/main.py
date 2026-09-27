@@ -75,11 +75,10 @@ def follow(file, ref, relation, depth):
 
 
 @main.command()
-@click.argument("file")
 @click.argument("old")
 @click.argument("new")
-def diff_cmd(file, old, new):
-    """`old` and `new` are ids/paths; if only one path, diff against `file`."""
+def diff_cmd(old, new):
+    """Semantic diff between two .xir files: renames are distinguished from remove+add."""
     click.echo(diff(_model(old), _model(new)))
 
 

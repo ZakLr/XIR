@@ -5,7 +5,7 @@ Repo: https://github.com/ZakLr/XIR · License: AGPLv3+ · CLI: `xir`
 ## Before a release
 
 ```bash
-pytest -q                    # 64 tests
+pytest -q                    # 80 tests
 python benchmarks/tasks.py   # semantic benchmark, must be all-pass
 python -m build --wheel      # then verify the artifact in a clean env:
 python -m venv /tmp/v && /tmp/v/bin/pip install dist/*.whl \

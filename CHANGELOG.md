@@ -14,7 +14,9 @@
 - Strict parsing by default with an explicit `xir recover` mode.
 - Real React target and semantic Playwright generation.
 - Honest benchmark: 40/40 measured, results labelled MEASURED / SIMULATED / INFERRED.
-- 64 tests; semantic round-trip stable across all examples.
+- 80 tests; semantic round-trip stable across all examples.
+- Agent guide (docs/AGENTS.md) and repository guide (docs/REPO.md), with tests that
+  execute every documented command and parse every documented XIR snippet.
 
 ## 1.0.0
 - Initial public release of the XIR skeleton (previously IXL), AGPLv3+.

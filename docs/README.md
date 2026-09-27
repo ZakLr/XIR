@@ -2,8 +2,12 @@
 
 ## Start here
 
-- [README](../README.md) — what XIR is and what an agent can do with it
-- [docs/v0.3-audit.md](v0.3-audit.md) — what v0.2 could not express, and the decisions that followed
+| I want to… | Read |
+|---|---|
+| **use XIR (as an agent or a developer)** | **[AGENTS.md](AGENTS.md)** — the command surface, traversal recipes, patch workflow, conventions |
+| **understand this repository** | **[REPO.md](REPO.md)** — layout, how to run it, where to start reading, how to contribute |
+| understand the product | [README](../README.md) |
+| understand what v0.2 could not express | [docs/v0.3-audit.md](v0.3-audit.md) |
 
 ## Specification
 
@@ -40,5 +44,7 @@ The language has three separate layers, on purpose.
 
 - [DECISIONS.md](../DECISIONS.md) — architectural decisions and their reasons
 - [OPEN_QUESTIONS.md](../OPEN_QUESTIONS.md) — open questions and known gaps
+- [CONTRIBUTING.md](../CONTRIBUTING.md) — how to propose a change
+- [RELEASING.md](../RELEASING.md) — release and publish steps
 - [CHANGELOG.md](../CHANGELOG.md) — release history
 - [benchmarks/report.md](../benchmarks/report.md) — measured results, with provenance labels

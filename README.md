@@ -109,7 +109,10 @@ agent performance and are never presented as such.
 
 ## Documentation
 
-- [`docs/v0.3-audit.md`](docs/v0.3-audit.md) — what v0.2 could not express, and why
+- **[docs/AGENTS.md](docs/AGENTS.md)** — using XIR: command surface, traversal recipes, patch workflow, conventions
+- **[docs/REPO.md](docs/REPO.md)** — this repository: layout, how to run it, how to contribute
+- [docs/index](docs/README.md) — the rest: spec, research, process
+- [docs/v0.3-audit.md](docs/v0.3-audit.md) — what v0.2 could not express, and why
 - [`spec/`](spec/) — grammar, semantics, ontology, graph, queries, patches, validation
 
 ## Status
