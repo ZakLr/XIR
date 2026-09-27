@@ -30,9 +30,15 @@ Repository = "https://github.com/ZakLr/XIR"
 Issues = "https://github.com/ZakLr/XIR/issues"
 [project.scripts]
 xir = "xir.cli:main"
+# pre-rename name, kept as an alias so existing muscle memory and scripts keep working
 ixl = "xir.cli:main"
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# the grammar is loaded at runtime by xir.parser.strict; without this the
+# installed wheel raises on import
+[tool.setuptools.package-data]
+xir = ["parser/*.lark"]

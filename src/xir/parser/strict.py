@@ -7,11 +7,18 @@ transformers, so the tree is built first and transformed afterwards.
 No silent tolerant fallback lives here. `parser/parse.py` owns that policy.
 """
 from __future__ import annotations
-from pathlib import Path
 from lark import Lark
 from xir.ast import nodes as A
 
-_GRAMMAR = Path(__file__).with_name("grammar.lark").read_text(encoding="utf-8")
+
+def _grammar() -> str:
+    """Load the grammar from package data so it works installed, zipped or vendored."""
+    try:
+        from importlib.resources import files
+        return (files("xir.parser") / "grammar.lark").read_text(encoding="utf-8")
+    except Exception:
+        from pathlib import Path
+        return (Path(__file__).with_name("grammar.lark")).read_text(encoding="utf-8")
 
 
 def _flat(items):
@@ -477,7 +484,7 @@ class _T:
         return (str(items[0]), str(items[1]))
 
 
-_parser = Lark(_GRAMMAR, parser="earley", maybe_placeholders=False)
+_parser = Lark(_grammar(), parser="earley", maybe_placeholders=False)
 
 
 def parse_strict(text: str):
