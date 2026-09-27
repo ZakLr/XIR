@@ -308,6 +308,20 @@ Legacy flat forms still parse and are upgraded on load: `actors { a b }`,
 
 ---
 
+## An agent skill exists for this
+
+`skills/xir/` packages this guide as an installable agent skill, with a trigger-rich
+description, five reference files and a model-health script. Install it and any agent
+picks XIR up automatically when the work is semantic:
+
+```bash
+cp -r skills/xir ~/.config/opencode/skills/     # opencode
+cp -r skills/xir ~/.claude/skills/              # Claude Code
+```
+
+`tests/test_skill.py` executes every command and snippet in the skill, so it cannot
+drift from the tool.
+
 ## Further reading
 
 | Doc | For |

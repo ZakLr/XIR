@@ -78,7 +78,7 @@ git clone https://github.com/ZakLr/XIR.git
 cd XIR
 pip install -e .[dev]
 
-pytest -q                    # 80 tests
+pytest -q                    # 101 tests
 python benchmarks/tasks.py   # semantic benchmark
 xir validate examples/project-manager/app.xir
 xir trace examples/project-manager/app.xir archiveProject

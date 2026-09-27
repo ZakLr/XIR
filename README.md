@@ -120,6 +120,29 @@ agent performance and are never presented as such.
 v0.3. The semantic model is the product; parsing and rendering are deliberately
 secondary. Known gaps are tracked in `OPEN_QUESTIONS.md`.
 
+## Agent skill
+
+`skills/xir/` is a ready-to-install agent skill: trigger-rich frontmatter, five
+reference files, and a model-health script.
+
+```bash
+cp -r skills/xir ~/.config/opencode/skills/     # or ~/.claude/skills/
+```
+
+```bash
+$ python skills/xir/scripts/xir_health.py examples/project-manager/app.xir
+  ProjectManager [exp.projectManager] v1
+  coverage:
+    capabilities_typed                 2/2
+    machines_with_transitions          3/3
+    flow_steps_fully_specified         2/2
+  round-trip: stable
+  findings: none
+```
+
+The health report shows the distinction that matters: a model can validate clean and
+still be barely specified. That gap is what the coverage lines expose.
+
 ## License
 
 AGPLv3+.
