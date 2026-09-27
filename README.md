@@ -21,7 +21,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3%2B-ff6b9d?style=flat-square" alt="AGPLv3+"/></a>
   <a href="https://pypi.org/project/xir-core/"><img src="https://img.shields.io/badge/pypi-xir--core-22d3ee?style=flat-square" alt="PyPI"/></a>
   <img src="https://img.shields.io/badge/python-%3E%3D3.10-22d3ee?style=flat-square" alt="Python 3.10+"/>
-  <img src="https://img.shields.io/badge/tests-115%20passing-4ade80?style=flat-square" alt="115 tests"/>
+  <img src="https://img.shields.io/badge/tests-119%20passing-4ade80?style=flat-square" alt="119 tests"/>
   <img src="https://img.shields.io/badge/status-alpha-a78bfa?style=flat-square" alt="alpha"/>
 </p>
 

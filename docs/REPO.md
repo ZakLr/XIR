@@ -50,7 +50,7 @@ docs/          this file, AGENTS.md, v0.3-audit.md, ROADMAP, COMMUNITY,
                STAR_HISTORY, index.md, logo, generated assets
 examples/      five models, each with golden projections
 benchmarks/    the suite and the results report
-tests/         118 tests
+tests/         119 tests
 skills/xir/    the installable agent skill
 mkdocs.yml     site config; branding/build_site.py stages and builds it
 ```
@@ -83,7 +83,7 @@ git clone https://github.com/ZakLr/XIR.git
 cd XIR
 pip install -e .[dev]
 
-pytest -q                    # 118 tests
+pytest -q                    # 119 tests
 python benchmarks/tasks.py   # semantic benchmark
 xir validate examples/project-manager/app.xir
 xir trace examples/project-manager/app.xir archiveProject

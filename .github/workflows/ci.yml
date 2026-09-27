@@ -72,11 +72,33 @@ jobs:
         with:
           path: site
 
+  deploy-docs:
+    name: deploy docs
+    # Same run as the build, so the artifact is the one CI just verified.
+    needs: docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: download the verified build
+        uses: actions/download-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
   publish:
     name: publish to PyPI
     # tag-driven, so a version bump is the only thing that can publish
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [test, benchmark, package, docs]
+    needs: [test, benchmark, package, docs, deploy-docs]
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

@@ -23,7 +23,7 @@
   that stars are not a benchmark and that no blinded agent trial has been run.
 - CI gains docs and PyPI jobs. Publishing is tag-driven and uses trusted publishing,
   with a check that the tag matches the version in `pyproject.toml`.
-- 118 tests, up from 80. Semantic round-trip still stable across all examples.
+- 119 tests, up from 80. Semantic round-trip still stable across all examples.
 
 ## 0.3.0
 - Separated the syntax AST from the semantic IR; graph, validation, query, patch, diff
